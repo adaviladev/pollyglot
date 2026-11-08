@@ -10,32 +10,14 @@ export default function App() {
   async function handleTranslate() {
     if (text.trim() === "") return;
 
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are an expert translator. Reply only with the translation, nothing else.",
-      },
-      {
-        role: "user",
-        content: `Translate the following text into ${language}: ${text}`,
-      },
-    ];
-
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await fetch(`${process.env.AI_URL}/chat/completions`, {
+      const response = await fetch("/.netlify/functions/translate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.AI_KEY}`,
-        },
-        body: JSON.stringify({
-          model: process.env.AI_MODEL,
-          messages: messages,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, language }),
       });
 
       if (!response.ok) {
@@ -43,7 +25,7 @@ export default function App() {
       }
 
       const data = await response.json();
-      setTranslation(data.choices[0].message.content);
+      setTranslation(data.translation);
     } catch (err) {
       console.log("Algo falló:", err);
       setError("Something went wrong. Please try again.");
