@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "./components/Header.jsx";
+import TranslationResult from "./components/TranslationResult.jsx";
 
 export default function App() {
   const [text, setText] = useState("");
@@ -84,10 +85,7 @@ export default function App() {
         <button onClick={handleTranslate} disabled={isLoading}>
           {isLoading ? "Translating..." : "Translate"}
         </button>
-
-        <h2>Your translation</h2>
-        <p className="translation">{translation}</p>
-        {error && <p className="error">{error}</p>}
+        <TranslationResult translation={translation} error={error} />
       </main>
     </div>
   );
