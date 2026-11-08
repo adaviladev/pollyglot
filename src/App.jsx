@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from "./components/Header.jsx";
 
 export default function App() {
   const [text, setText] = useState("");
@@ -36,14 +37,7 @@ export default function App() {
 
   return (
     <div>
-      <header>
-        <img src="assets/parrot.png" alt="PollyGlot parrot" />
-        <div>
-          <h1>PollyGlot</h1>
-          <p>Perfect Translation Every Time</p>
-        </div>
-      </header>
-
+      <Header />
       <main>
         <h2>Text to translate</h2>
         <textarea
