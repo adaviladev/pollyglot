@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "./components/Header.jsx";
 import TranslationResult from "./components/TranslationResult.jsx";
+import LanguageSelector from "./components/LanguageSelector.jsx";
 
 export default function App() {
   const [text, setText] = useState("");
@@ -46,41 +47,7 @@ export default function App() {
           onChange={(e) => setText(e.target.value)}
         ></textarea>
 
-        <h2>Select language</h2>
-
-        <label>
-          <input
-            type="radio"
-            name="language"
-            value="French"
-            checked={language === "French"}
-            onChange={(e) => setLanguage(e.target.value)}
-          />
-          French
-          <img src="assets/fr-flag.png" alt="French flag" />
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="language"
-            value="Spanish"
-            checked={language === "Spanish"}
-            onChange={(e) => setLanguage(e.target.value)}
-          />
-          Spanish
-          <img src="assets/sp-flag.png" alt="Spanish flag" />
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="language"
-            value="Japanese"
-            checked={language === "Japanese"}
-            onChange={(e) => setLanguage(e.target.value)}
-          />
-          Japanese
-          <img src="assets/jpn-flag.png" alt="Japanese flag" />
-        </label>
+        <LanguageSelector language={language} onLanguageChange={setLanguage} />
 
         <button onClick={handleTranslate} disabled={isLoading}>
           {isLoading ? "Translating..." : "Translate"}
