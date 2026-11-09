@@ -11,7 +11,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleTranslate() {
+  async function handleRequest(mode) {
     if (text.trim() === "") return;
 
     setIsLoading(true);
@@ -21,7 +21,7 @@ export default function App() {
       const response = await fetch("/.netlify/functions/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, language }),
+        body: JSON.stringify({ text, language, mode }),
       });
 
       if (!response.ok) {
@@ -44,8 +44,11 @@ export default function App() {
       <main>
         <TextInput text={text} onTextChange={setText} />
         <LanguageSelector language={language} onLanguageChange={setLanguage} />
-        <button onClick={handleTranslate} disabled={isLoading}>
+        <button onClick={() => handleRequest("translate")} disabled={isLoading}>
           {isLoading ? "Translating..." : "Translate"}
+        </button>
+        <button onClick={() => handleRequest("correct")} disabled={isLoading}>
+          Correct
         </button>
         <TranslationResult translation={translation} error={error} />
       </main>
