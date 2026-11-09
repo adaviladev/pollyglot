@@ -29,7 +29,7 @@ export default function App() {
       }
 
       const data = await response.json();
-      setTranslation(data.translation);
+      setTranslation(data.result);
     } catch (err) {
       console.log("Algo falló:", err);
       setError("Something went wrong. Please try again.");

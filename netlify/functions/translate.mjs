@@ -1,5 +1,31 @@
 const LANGUAGES = ["French", "Spanish", "Japanese"];
+const MODES = ["translate", "correct"];
 const MAX_LENGTH = 500;
+
+function buildMessages(mode, text, language) {
+  if (mode === "correct") {
+    return [
+      {
+        role: "system",
+        content:
+          "You are an expert proofreader. Fix the spelling and grammar of the text, keeping its original language. Reply only with the corrected text, nothing else.",
+      },
+      { role: "user", content: text },
+    ];
+  }
+
+  return [
+    {
+      role: "system",
+      content:
+        "You are an expert translator. Reply only with the translation, nothing else.",
+    },
+    {
+      role: "user",
+      content: `Translate the following text into ${language}: ${text}`,
+    },
+  ];
+}
 
 export default async (req) => {
   if (req.method !== "POST") {
@@ -13,7 +39,11 @@ export default async (req) => {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { text, language } = body;
+  const { text, language, mode = "translate" } = body;
+
+  if (!MODES.includes(mode)) {
+    return Response.json({ error: "Invalid mode" }, { status: 400 });
+  }
 
   if (
     typeof text !== "string" ||
@@ -23,21 +53,11 @@ export default async (req) => {
     return Response.json({ error: "Invalid text" }, { status: 400 });
   }
 
-  if (!LANGUAGES.includes(language)) {
+  if (mode === "translate" && !LANGUAGES.includes(language)) {
     return Response.json({ error: "Invalid language" }, { status: 400 });
   }
 
-  const messages = [
-    {
-      role: "system",
-      content:
-        "You are an expert translator. Reply only with the translation, nothing else.",
-    },
-    {
-      role: "user",
-      content: `Translate the following text into ${language}: ${text}`,
-    },
-  ];
+  const messages = buildMessages(mode, text, language);
 
   try {
     const response = await fetch(`${process.env.AI_URL}/chat/completions`, {
@@ -54,13 +74,13 @@ export default async (req) => {
 
     if (!response.ok) {
       console.error("OpenAI error:", response.status);
-      return Response.json({ error: "Translation failed" }, { status: 502 });
+      return Response.json({ error: "Request failed" }, { status: 502 });
     }
 
     const data = await response.json();
-    return Response.json({ translation: data.choices[0].message.content });
+    return Response.json({ result: data.choices[0].message.content });
   } catch (err) {
     console.error("Function error:", err);
-    return Response.json({ error: "Translation failed" }, { status: 502 });
+    return Response.json({ error: "Request failed" }, { status: 502 });
   }
 };
