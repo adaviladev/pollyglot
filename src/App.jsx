@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header.jsx";
 import TranslationResult from "./components/TranslationResult.jsx";
 import LanguageSelector from "./components/LanguageSelector.jsx";
+import TextInput from "./components/TextInput.jsx";
 
 export default function App() {
   const [text, setText] = useState("");
@@ -41,14 +42,8 @@ export default function App() {
     <div>
       <Header />
       <main>
-        <h2>Text to translate</h2>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        ></textarea>
-
+        <TextInput text={text} onTextChange={setText} />
         <LanguageSelector language={language} onLanguageChange={setLanguage} />
-
         <button onClick={handleTranslate} disabled={isLoading}>
           {isLoading ? "Translating..." : "Translate"}
         </button>
